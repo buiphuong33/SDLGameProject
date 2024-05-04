@@ -211,7 +211,7 @@ int main(int argc, char *argv[])
     bool musicClick = false;
     Uint32 startTime = SDL_GetTicks();
     Uint32 timeElapsed = 0;
-    while( !quit ) {
+    while(!quit ) {
         Uint32 currentTime = SDL_GetTicks();
         while( SDL_PollEvent( &e ) != 0 ) {
             SDL_GetMouseState(&x, &y);
@@ -246,6 +246,9 @@ int main(int argc, char *argv[])
                         ROCKET_SPEED =20;
                         currentState = SCREEN_1;
                     }
+                 }
+                 else if (x>=EXIT_X && x<=EXIT_X+EXIT_W && y>=EXIT_Y && y<=EXIT_Y+EXIT_H) {
+                    if(currentState == SCREEN_3) quit=true;
                  }
                  else if( x>=SOUND_X && x<=SOUND_X+SOUND_W && y>=SOUND_Y && y<=SOUND_Y+SOUND_H) {
                     if(currentState == SCREEN_4) {
