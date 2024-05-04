@@ -1,0 +1,140 @@
+# depslib dependency file v1.0
+1712132109 source:c:\users\admin\onedrive\documents\btsdl2\t-rex\main.cpp
+	<iostream>
+	<cstdlib>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"graphics.h"
+	"defs.h"
+	"enermy.cpp"
+
+1712147779 c:\users\admin\onedrive\documents\btsdl2\t-rex\graphics.h
+	<cstdlib>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"defs.h"
+	<vector>
+
+1712128973 c:\users\admin\onedrive\documents\btsdl2\t-rex\defs.h
+
+1711419788 source:c:\users\admin\onedrive\documents\btsdl2\t-rex\game_ultis.cpp
+
+1711732681 source:c:\users\admin\onedrive\documents\btsdl2\t-rex\enermy.cpp
+
+1711732681 c:\users\admin\onedrive\documents\btsdl2\t-rex\enermy.cpp
+
+1711732681 source:c:\users\admin\onedrive\documents\btsdl2\cute cat\enermy.cpp
+
+1711419788 source:c:\users\admin\onedrive\documents\btsdl2\cute cat\game_ultis.cpp
+
+1714659787 source:c:\users\admin\onedrive\documents\btsdl2\cute cat\main.cpp
+	<iostream>
+	<cstdlib>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"graphics.h"
+	"defs.h"
+	"game.h"
+	<bits/stdc++.h>
+	<cstdlib>
+
+1714069005 c:\users\admin\onedrive\documents\btsdl2\cute cat\graphics.h
+	<cstdlib>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"defs.h"
+	<vector>
+	"game.h"
+
+1714140333 c:\users\admin\onedrive\documents\btsdl2\cute cat\defs.h
+
+1711732681 c:\users\admin\onedrive\documents\btsdl2\cute cat\enermy.cpp
+
+1714659981 c:\users\admin\onedrive\documents\btsdl2\cute cat\game.h
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	"defs.h"
+	"graphics.h"
+	<bits/stdc++.h>
+	<algorithm>
+	<cstdlib>
+
+1714659787 source:c:\users\admin\onedrive\documents\gameproject\cute cat\main.cpp
+	<iostream>
+	<cstdlib>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"graphics.h"
+	"defs.h"
+	"game.h"
+	<bits/stdc++.h>
+	<cstdlib>
+
+1714069005 c:\users\admin\onedrive\documents\gameproject\cute cat\graphics.h
+	<cstdlib>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"defs.h"
+	<vector>
+	"game.h"
+
+1714140333 c:\users\admin\onedrive\documents\gameproject\cute cat\defs.h
+
+1714659981 c:\users\admin\onedrive\documents\gameproject\cute cat\game.h
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	"defs.h"
+	"graphics.h"
+	<bits/stdc++.h>
+	<algorithm>
+	<cstdlib>
+
+1714836333 source:c:\users\admin\onedrive\documents\gameproject1\cute cat\main.cpp
+	<iostream>
+	<cstdlib>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"graphics.h"
+	"defs.h"
+	"game.h"
+	<bits/stdc++.h>
+	<cstdlib>
+
+1714830487 c:\users\admin\onedrive\documents\gameproject1\cute cat\graphics.h
+	<cstdlib>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"defs.h"
+	<vector>
+	"game.h"
+
+1714836516 c:\users\admin\onedrive\documents\gameproject1\cute cat\defs.h
+
+1714831729 c:\users\admin\onedrive\documents\gameproject1\cute cat\game.h
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	"defs.h"
+	"graphics.h"
+	<bits/stdc++.h>
+	<algorithm>
+	<cstdlib>
+
