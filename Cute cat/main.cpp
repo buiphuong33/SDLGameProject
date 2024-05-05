@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
     //load font
     TTF_Font* font = graphics.loadFont("assets/DkHandRegular-orna.ttf", 30);
     SDL_Color color = {0, 0, 0, 255}; // mau van ban
+    SDL_Color scoreColor = {255, 255, 255, 255};
 
     SDL_Texture* intro = graphics.loadTexture1("img/introBg.png");
     graphics.prepareScene(intro);
@@ -211,6 +212,7 @@ int main(int argc, char *argv[])
     bool musicClick = false;
     Uint32 startTime = SDL_GetTicks();
     Uint32 timeElapsed = 0;
+
     while(!quit ) {
         Uint32 currentTime = SDL_GetTicks();
         while( SDL_PollEvent( &e ) != 0 ) {
@@ -227,12 +229,13 @@ int main(int argc, char *argv[])
                         currentState = SCREEN_4;
                     }
                  }
-
                  else if(x>=REPLAY_X && x<=REPLAY_X+REPLAY_W && y>=REPLAY_Y && y<=REPLAY_Y+REPLAY_H) {
                     if(currentState == SCREEN_3) {
                        // hearts=3;
-                       cat.posX = SCREEN_WIDTH-700;
-                       cat.posY = GROUND;
+                        bush.bushCount=0;
+                        rocket.rocketCount=0;
+                        cat.posX = SCREEN_WIDTH-700;
+                        cat.posY = GROUND;
                         coinCount=0;
                         for (int i=0; i<5; i++) {
                             coins[i].visible = true;
@@ -266,10 +269,9 @@ int main(int argc, char *argv[])
                     if(currentState == SCREEN_4) {
                         currentState = SCREEN_1;
                     }
-                 }
+                }
             }
-          }
-
+        }
         if (currentState == SCREEN_1) {
             graphics.prepareScene(intro);
             if(!musicClick) {
@@ -444,16 +446,16 @@ int main(int argc, char *argv[])
 
             }*/
             bush.bushMove(BUSH_SPEED);
-            rocket.rocketMove(ROCKET_SPEED);
-
+            //cerr << bush.bushCount << endl;
             graphics.render (cat);
             graphics.render_rect(bushTexture, bush.posX, bush.posY-15, 70, 70);
-            graphics.render_rect(rocketTexture, rocket.posX, rocket.posY-70, 70, 50);
-
-            if(currentTime - startTime >= 8000) {
+            if(bush.bushCount >= 5) {
+                rocket.rocketMove(ROCKET_SPEED);
+                graphics.render_rect(rocketTexture, rocket.posX, rocket.posY-70, 70, 50);
+            }
+            if(rocket.rocketCount==5) {
                 bom.enemyMove(BOM_SPEED);
                 graphics.render_rect(bomTexture, bom.posX, bom.posY, 90, 70);
-                //cerr << currentTime << endl;
             }
             if(SDL_HasIntersection(&r1, &r3)|| SDL_HasIntersection(&r1, &r4)|| SDL_HasIntersection(&r1, &r5)) {
                 cerr << "collide" << endl;
@@ -480,11 +482,11 @@ int main(int argc, char *argv[])
                 SDL_Delay(1000);
 
             }
-            if(currentTime-timeElapsed>=20000) {
+            /*if(currentTime-timeElapsed>=20000) {
                 update(ROCKET_SPEED);
                 cerr << ROCKET_SPEED << endl;
                 timeElapsed = currentTime;
-            }
+            }*/
             SDL_FreeSurface(coinSurface);
             SDL_DestroyTexture(score);
 
@@ -520,13 +522,13 @@ int main(int argc, char *argv[])
             }
 
             string coinScore = "YOUR COINS:  " + to_string(coinCount);
-            SDL_Surface* coinScoreSurface = graphics.createTextSurface(coinScore, font, color );
+            SDL_Surface* coinScoreSurface = graphics.createTextSurface(coinScore, font, scoreColor );
             SDL_Texture* your_score = graphics.createText(coinScoreSurface);
             graphics.drawText(your_score, 250, 330);
 
 
             string highestCoinsText = "HIGHEST COINS:  " +to_string(highestCoins);
-            SDL_Surface* HighestCoinsSurface = graphics.createTextSurface(highestCoinsText, font, color);
+            SDL_Surface* HighestCoinsSurface = graphics.createTextSurface(highestCoinsText, font, scoreColor);
             SDL_Texture* highestCoinsTexture = graphics.createText(HighestCoinsSurface);
             graphics.drawText(highestCoinsTexture, 250, 250);
             graphics.presentScene();

@@ -46,9 +46,7 @@ struct Character {
             clips.push_back(clip);
         }
     }
-    /*void tick() {
-        currentFrame = (currentFrame +1) % clips.size();
-    }*/
+
      void tick() {
         //currentFrame = (currentFrame +1) % (clips.size());
         static int frameCount = 0;
@@ -100,11 +98,12 @@ struct Character {
 struct Rocket {
     int posX = rand() % (SCREEN_WIDTH) + 2*SCREEN_WIDTH;
 	int	posY = GROUND  ;
-
+	int rocketCount = 0;
 	void rocketMove(const int &movespeed) {
 	    posX -= movespeed;
         if (posX + MAX_ENEMY_WIDTH < 0) {
-		posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
+            posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
+            rocketCount++;
         }
 	}
 
@@ -176,12 +175,13 @@ struct Bullet {
 };
 struct Bush {
     int posX = rand() % (SCREEN_WIDTH) + 2*SCREEN_WIDTH;
-	int	posY = GROUND  ;
-
+	int	posY = GROUND ;
+	int bushCount = 0;
 	void bushMove(const int &movespeed) {
 	    posX -= movespeed;
         if (posX + MAX_ENEMY_WIDTH < 0) {
-		posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
+            posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
+            bushCount++;
         }
 	}
 
