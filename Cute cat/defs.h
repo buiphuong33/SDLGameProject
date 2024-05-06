@@ -19,18 +19,24 @@
 #define MAX_ENEMY_WIDTH 100
 
 #define BULLET_SPEED 15
-//#define ROCKET_SPEED 20
-#define BUSH_SPEED 9
+
+//#define BUSH_SPEED 9
 
 #define INITIAL_STEP 6
 
-#define COIN_SPEED 8
-#define MAX_COIN_SPEED 5
+//#define COIN_SPEED 8
+#define MAX_BOX_WIDTH 100
 #define MAX_COIN_WIDTH 100
-//int ROCKET_SPEED = 20;
 
+#define MIN_ROCKET_SPEED 12
+#define MIN_BUSH_SPEED 9
+#define MIN_BOM_SPEED 8
+#define MIN_LAYER5_SPEED 8
+#define MIN_LAYER4_SPEED 8
+#define MIN_COIN_SPEED 8
+#define MIN_BOX_SPEED 8
 const int FLYING_FRAMES = 5;
-const int BOM_SPEED = 8;
+
 const int PLAY_X =380;
 const int PLAY_Y =340;
 const int PLAY_W =150;

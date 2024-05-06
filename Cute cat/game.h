@@ -23,8 +23,8 @@ bool vacham (SDL_Rect &r1, SDL_Rect &r2, int speed) {
     return (0 <= r2.x-(r1.x+r1.w) && r2.x-(r1.x+r1.w) <= speed && (r1.y+r1.h) >= r2.y) ;//|| (r1.x<=r2.x+r2.w && r1.y+r1.h>=r2.y && r2.x-(r1.x+r1.w)<=speed) ;
 }
 
-void update(int &s) {
-    s+=3;
+void update(int &speed) {
+    speed+=1;
 }
 
 
@@ -224,17 +224,12 @@ struct Coin {
 	int	posY = GROUND  ;
 
 	void coinMove(const int &movespeed) {
-	    posX -= ( COIN_SPEED);
+	    posX -= ( movespeed);
         if (posX + MAX_COIN_WIDTH < 0) {
 		posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
         }
 	}
-	void coinMove2(const int &movespeed, int x, int i) {
-	    posX -= ( COIN_SPEED);
-        if (posX + MAX_COIN_WIDTH < 0) {
-		posX = x+50*i;
-        }
-	}
+
 
     SDL_Rect getCoinRect()  const{
     return {posX, posY, clip.w, clip.h};
@@ -257,6 +252,20 @@ struct Coin {
     }
 
  };
+struct Box {
+    bool active;
+    int posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
+	int	posY = GROUND  ;
+	void boxMove(const int &movespeed) {
+	    posX -= movespeed;
+        if (posX + MAX_BOX_WIDTH < 0) {
+            posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
+        }
+	}
 
+    SDL_Rect getBoxRect()  const{
+    return {posX, posY-100, 50, 50};
+    }
+};
 
 #endif // _GAME__H

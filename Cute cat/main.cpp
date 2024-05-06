@@ -10,13 +10,13 @@
 #include <bits/stdc++.h>
 #include <cstdlib>
 #include <fstream>
+using namespace std;
 int highestCoins = 0;
 
 // Hàm để lưu và cập nhật điểm cao nhất
 void updateHighestCoins(int currentCoins) {
     if (currentCoins > highestCoins) {
         highestCoins = currentCoins;
-
         // Lưu điểm cao nhất vào tệp
         ofstream file("highest_coins.txt");
         if (file.is_open()) {
@@ -33,28 +33,27 @@ void readHighestCoins () {
     }
 }
 
-
-using namespace std;
 enum ScreenState {
-    SCREEN_1, // poster game
-    SCREEN_2, // man hinh chinh
+    SCREEN_1, // intro game
+    SCREEN_2, // man hinh chinh choi game
     SCREEN_3, // game over
     SCREEN_4, // dieu chinh am thanh
 };
 
 int main(int argc, char *argv[])
 {
-    /*ifstream file("highest_score.txt");
-    if(file.is_open()) {
-        file >> highestCoins;
-        file.close();
-    }*/
     readHighestCoins();
     srand(time(NULL));
     int coinCount = 0;
-    int hearts = 3;
-    int ROCKET_SPEED = 20;
-    //srand(time(NULL));
+
+    int ROCKET_SPEED = MIN_ROCKET_SPEED;
+    int BUSH_SPEED = MIN_BUSH_SPEED;
+    int BOM_SPEED = MIN_BOM_SPEED;
+    int COIN_SPEED = MIN_BOM_SPEED;
+    int LAYER5_SPEED = MIN_LAYER5_SPEED;
+    int LAYER4_SPEED = MIN_LAYER4_SPEED;
+    int BOX_SPEED = MIN_BOX_SPEED;
+
     Graphics graphics;
     graphics.init();
     ScreenState currentState = SCREEN_1;
@@ -116,7 +115,7 @@ int main(int argc, char *argv[])
     r1Layer1.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer1;
-    r2Layer1.x = -(SCREEN_WIDTH);
+    r2Layer1.x = -(SCREEN_WIDTH-1);
     r2Layer1.y = 0;
     r2Layer1.w = SCREEN_WIDTH;
     r2Layer1.h = SCREEN_HEIGHT;
@@ -128,7 +127,7 @@ int main(int argc, char *argv[])
     r1Layer2.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer2;
-    r2Layer2.x = -(SCREEN_WIDTH);
+    r2Layer2.x = -(SCREEN_WIDTH-1);
     r2Layer2.y = 0;
     r2Layer2.w = SCREEN_WIDTH;
     r2Layer2.h = SCREEN_HEIGHT;
@@ -140,7 +139,7 @@ int main(int argc, char *argv[])
     r1Layer3.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer3;
-    r2Layer3.x = -(SCREEN_WIDTH);
+    r2Layer3.x = -(SCREEN_WIDTH-1);
     r2Layer3.y = 0;
     r2Layer3.w = SCREEN_WIDTH;
     r2Layer3.h = SCREEN_HEIGHT;
@@ -152,7 +151,7 @@ int main(int argc, char *argv[])
     r1Layer4.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer4;
-    r2Layer4.x = -(SCREEN_WIDTH);
+    r2Layer4.x = -(SCREEN_WIDTH-1);
     r2Layer4.y = 0;
     r2Layer4.w = SCREEN_WIDTH;
     r2Layer4.h = SCREEN_HEIGHT;
@@ -164,7 +163,7 @@ int main(int argc, char *argv[])
     r1Layer5.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer5;
-    r2Layer5.x = -(SCREEN_WIDTH);
+    r2Layer5.x = -(SCREEN_WIDTH-LAYER5_SPEED);
     r2Layer5.y = 0;
     r2Layer5.w = SCREEN_WIDTH;
     r2Layer5.h = SCREEN_HEIGHT;
@@ -180,6 +179,9 @@ int main(int argc, char *argv[])
     SDL_Texture* rocketTexture = graphics.loadTexture1("img/rocket.png");
     Bom bom;
     SDL_Texture* bomTexture = graphics.loadTexture1("img/bom.png");
+    Box box;
+    SDL_Texture* mysteryBox = graphics.loadTexture1("img/mysteryBox.png");
+    SDL_Texture* scarfTexture = graphics.loadTexture1("img/scarf.png");
     // khai bao mang song
     SDL_Texture* heart1 = graphics.loadTexture1("img/heart.png");
     SDL_Texture* heart2 = graphics.loadTexture1("img/heart.png");
@@ -210,11 +212,17 @@ int main(int argc, char *argv[])
     int y;
     bool soundClick = false;
     bool musicClick = false;
-    Uint32 startTime = SDL_GetTicks();
-    Uint32 timeElapsed = 0;
+    Uint32 startTime = 0;
+    Uint32 currentTime = 0;
+    Uint32 deltaTime = 0;
+    Uint32 lastLevelUp = 0;
+    Uint32 levelUpInterval = 20000;
+    Uint32 lastBoxAppear = 0;
+    Uint32 boxAppearInterval = 20000;
+    int gift = 3;
 
     while(!quit ) {
-        Uint32 currentTime = SDL_GetTicks();
+
         while( SDL_PollEvent( &e ) != 0 ) {
             SDL_GetMouseState(&x, &y);
             if( e.type == SDL_QUIT ) quit = true;
@@ -222,6 +230,7 @@ int main(int argc, char *argv[])
                  if (x>=PLAY_X && x<=PLAY_X+PLAY_W && y>=PLAY_Y && y<=PLAY_Y+PLAY_H) {
                     if (currentState == SCREEN_1) {
                         currentState = SCREEN_2;
+                        startTime = SDL_GetTicks();
                     }
                  }
                  else if(x>=SETTING_X && x<=SETTING_X+SETTING_W && y>=SETTING_Y && y<=SETTING_Y+SETTING_H) {
@@ -245,8 +254,13 @@ int main(int argc, char *argv[])
                         rocket.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
                         bom.posX = rand()% 500;
                         bom.posY = rand()%(SCREEN_HEIGHT) - SCREEN_HEIGHT;
-                        startTime = currentTime;
-                        ROCKET_SPEED =20;
+                        //startTime = currentTime;
+                        ROCKET_SPEED = MIN_ROCKET_SPEED;
+                        BOM_SPEED = MIN_BOM_SPEED;
+                        BUSH_SPEED = MIN_BUSH_SPEED;
+                        COIN_SPEED = MIN_COIN_SPEED;
+                        LAYER4_SPEED = MIN_LAYER4_SPEED;
+                        LAYER5_SPEED = MIN_LAYER5_SPEED;
                         currentState = SCREEN_1;
                     }
                  }
@@ -296,6 +310,9 @@ int main(int argc, char *argv[])
             if(!musicClick) {
                 graphics.play(bgMusic);
             }
+            currentTime = SDL_GetTicks();
+            deltaTime = currentTime-startTime;
+
             graphics.setcolor();
             graphics.renderclear();
 
@@ -311,8 +328,8 @@ int main(int argc, char *argv[])
             r1Layer4.x-=8;
             r2Layer4.x-=8;
 
-            r1Layer5.x-=8;
-            r2Layer5.x-=8;
+            r1Layer5.x-=LAYER5_SPEED;
+            r2Layer5.x-=LAYER5_SPEED;
 
             if(r1Layer1.x <-(SCREEN_WIDTH)) r1Layer1.x = (SCREEN_WIDTH-15);
             if(r2Layer1.x <-(SCREEN_WIDTH)) r2Layer1.x = (SCREEN_WIDTH-15);
@@ -323,11 +340,11 @@ int main(int argc, char *argv[])
             if(r1Layer3.x <-(SCREEN_WIDTH)) r1Layer3.x = (SCREEN_WIDTH-15);
             if(r2Layer3.x <-(SCREEN_WIDTH)) r2Layer3.x = (SCREEN_WIDTH-15);
 
-            if(r1Layer4.x <-(SCREEN_WIDTH)) r1Layer4.x = (SCREEN_WIDTH-15);
-            if(r2Layer4.x <-(SCREEN_WIDTH)) r2Layer4.x = (SCREEN_WIDTH-15);
+            if(r1Layer4.x <-(SCREEN_WIDTH)) r1Layer4.x = (SCREEN_WIDTH-LAYER4_SPEED);
+            if(r2Layer4.x <-(SCREEN_WIDTH)) r2Layer4.x = (SCREEN_WIDTH-LAYER4_SPEED);
 
-            if(r1Layer5.x <-(SCREEN_WIDTH)) r1Layer5.x = (SCREEN_WIDTH-15);
-            if(r2Layer5.x <-(SCREEN_WIDTH)) r2Layer5.x = (SCREEN_WIDTH-15);
+            if(r1Layer5.x <-(SCREEN_WIDTH-LAYER5_SPEED)) r1Layer5.x = (SCREEN_WIDTH-LAYER5_SPEED);
+            if(r2Layer5.x <-(SCREEN_WIDTH-LAYER5_SPEED)) r2Layer5.x = (SCREEN_WIDTH-LAYER5_SPEED);
 
             graphics.cop(layer1, &r1Layer1);
             graphics.cop(layer1, &r2Layer1);
@@ -343,10 +360,6 @@ int main(int argc, char *argv[])
 
             graphics.cop(layer5, &r1Layer5);
             graphics.cop(layer5, &r2Layer5);
-            //render hearts
-           /* for (int i=0; i<hearts; i++) {
-                graphics.renderTexture(heart1, 10+50*i, 10);
-            }*/
             // render coin
             graphics.renderTexture(coinScore, 720, 10);
 
@@ -369,14 +382,14 @@ int main(int argc, char *argv[])
             graphics.drawText(score, 780, 20);
 
             SDL_Rect r1 = cat.getCharacterRect();
-            //SDL_Rect r2 = coin.getCoinRect();
+            SDL_Rect r2 = box.getBoxRect();
             SDL_Rect r3 = bush.getBushRect();
             SDL_Rect r4 = rocket.getRocketRect();
             SDL_Rect r5 = bom.getBomRect();
 
             for (int i=0; i<5; i++) {
                 coins[i].tick();
-                coins[i].coinMove(1);
+                coins[i].coinMove(COIN_SPEED);
                 SDL_Rect r2 = coins[i].getCoinRect();
                 if(coins[i].visible) {
                     graphics.renderCoin(coins[i]);
@@ -387,7 +400,6 @@ int main(int argc, char *argv[])
                         }
                         coins[i].visible = false;
                         visibleCoins--;
-
                     }
                 }
             }
@@ -398,110 +410,72 @@ int main(int argc, char *argv[])
                 }
                 visibleCoins = 5;
             }
-
-
-            /*if((vacham(r1, r3)||vacham(r1, r4)) && hearts==3) {
-                cerr << "collide" << endl;
-                hearts--;
-                if(vacham(r1, r3)) {
-                    graphics.render_rect(smokeTexture, bush.posX, bush.posY, 50, 50);
-                    bush.posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
-                }
-                else {
-                    graphics.render_rect(smokeTexture, rocket.posX, rocket.posY, 50, 50);
-                    rocket.posX = rand() % SCREEN_WIDTH + SCREEN_WIDTH;
-                }
-                graphics.play(Collide);
-
-            }
-            else if((vacham(r1, r3)||vacham(r1, r4)) && hearts==2) {
-                //graphics.renderTexture(whiteHeart, 60, 10);
-                hearts--;
-                cerr << "collide" << endl;
-                if(vacham(r1, r3)) {
-                    graphics.render_rect(smokeTexture, bush.posX, bush.posY, 50, 50);
-                    bush.posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
-                }
-                else {
-                    graphics.render_rect(smokeTexture, rocket.posX, rocket.posY, 50, 50);
-                    rocket.posX = rand() % SCREEN_WIDTH + SCREEN_WIDTH;
-                }
-                graphics.play(Collide);
-
-            }
-            else if((vacham(r1, r3)||vacham(r1, r4)) && hearts==1) {
-                //SDL_DestroyTexture(heart1);
-                graphics.renderTexture(whiteHeart, 10, 10);
-                hearts--;
-                cerr << "collide" << endl;
-                if(vacham(r1, r3)) {
-                    graphics.render_rect(smokeTexture, bush.posX, bush.posY, 50, 50);
-                    bush.posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
-                }
-                else {
-                    graphics.render_rect(smokeTexture, rocket.posX, rocket.posY, 50, 50);
-                    rocket.posX = rand() % SCREEN_WIDTH + SCREEN_WIDTH;
-                }
-                graphics.play(Collide);
-
-            }*/
             bush.bushMove(BUSH_SPEED);
-            //cerr << bush.bushCount << endl;
-            graphics.render (cat);
             graphics.render_rect(bushTexture, bush.posX, bush.posY-15, 70, 70);
+
             if(bush.bushCount >= 5) {
                 rocket.rocketMove(ROCKET_SPEED);
                 graphics.render_rect(rocketTexture, rocket.posX, rocket.posY-70, 70, 50);
             }
-            if(rocket.rocketCount==5) {
+            if(rocket.rocketCount>=5) {
                 bom.enemyMove(BOM_SPEED);
                 graphics.render_rect(bomTexture, bom.posX, bom.posY, 90, 70);
             }
-            if(SDL_HasIntersection(&r1, &r3)|| SDL_HasIntersection(&r1, &r4)|| SDL_HasIntersection(&r1, &r5)) {
-                cerr << "collide" << endl;
-
-                //hearts--;
-                /*if(vacham(r1, r3)) {
-                    graphics.render_rect(smokeTexture, bush.posX, bush.posY, 100, 100);
-
-                    //bush.posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
-
+            if(deltaTime - lastBoxAppear > boxAppearInterval) {
+                box.boxMove(8);
+                graphics.render_rect(mysteryBox, box.posX, box.posY-100, 50, 50);
+                if(box.posX + 50 <0  ) {
+                    box.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
+                    lastBoxAppear = deltaTime;
+                    cerr << "." << endl;
                 }
-                else {
-                    //graphics.render_rect(smokeTexture, rocket.posX, rocket.posY, 100, 100);
-
-                    //rocket.posX = rand() % SCREEN_WIDTH + SCREEN_WIDTH;
-
-                }*/
-                //if(!soundClick)graphics.play(Collide);
-                //if(hearts==0) {
+                else if(SDL_HasIntersection(&r1, &r2)) {
+                    lastBoxAppear = deltaTime;
+                    int xBox = box.posX;
+                    int yBox = box.posY;
+                    int k = rand();
+                    gift = k%2;
+                    cerr << k << endl;
+                    for (int i=0; i<=50; i+=10) {
+                        if(gift==1) {
+                            graphics.render_rect(bomTexture, xBox-30-i, yBox-150-i, 120+2*i, 100+2*i);
+                        }
+                        else if(gift==0) {
+                            graphics.render_rect(scarfTexture, xBox-30-i, yBox-150-i, 120+2*i, 100+2*i);
+                        }
+                            SDL_Delay(50);
+                            graphics.presentScene();
+                    }
+                    SDL_Delay(1000);
+                    box.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
+                }
+            }
+            if(gift!=0) {
+                if(SDL_HasIntersection(&r1, &r3)|| SDL_HasIntersection(&r1, &r4)|| SDL_HasIntersection(&r1, &r5)) {
+                cerr << "collide" << endl;
                     currentState = SCREEN_3;
                     updateHighestCoins(coinCount);
                     graphics.play(GameOver);
-                //}
-                SDL_Delay(1000);
-
+                    SDL_Delay(1000);
+                }
             }
-            /*if(currentTime-timeElapsed>=20000) {
+
+            graphics.render (cat);
+            if(deltaTime - lastLevelUp >levelUpInterval) {
+                update(BUSH_SPEED);
                 update(ROCKET_SPEED);
+                update(COIN_SPEED);
+                update(LAYER5_SPEED);
+                update(LAYER4_SPEED);
                 cerr << ROCKET_SPEED << endl;
-                timeElapsed = currentTime;
-            }*/
+                lastLevelUp = deltaTime;
+            }
+
+
             SDL_FreeSurface(coinSurface);
             SDL_DestroyTexture(score);
-
-            //graphics.render_rect(bomTexture, bom.posX, bom.posY, 90, 70);
             graphics.presentScene();
 
-            /*graphics.play(GameOver);
-            graphics.prepareScene(gameover);
-            string coinScore = "x" + to_string(coinCount);
-            SDL_Surface* coinScoreSurface = graphics.createTextSurface(coinScore, font, color );
-            SDL_Texture* your_score = graphics.createText(coinScoreSurface);
-            graphics.drawText(your_score, 300, 300);
-            graphics.render_rect(replayButton, 400, 200, 100, 100);
-            Mix_FreeChunk(Collide);
-            Mix_FreeMusic(bgMusic);*/
         }
 
         else if (currentState == SCREEN_3) {
@@ -525,7 +499,6 @@ int main(int argc, char *argv[])
             SDL_Surface* coinScoreSurface = graphics.createTextSurface(coinScore, font, scoreColor );
             SDL_Texture* your_score = graphics.createText(coinScoreSurface);
             graphics.drawText(your_score, 250, 330);
-
 
             string highestCoinsText = "HIGHEST COINS:  " +to_string(highestCoins);
             SDL_Surface* HighestCoinsSurface = graphics.createTextSurface(highestCoinsText, font, scoreColor);

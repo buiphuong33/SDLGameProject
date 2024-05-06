@@ -138,3 +138,39 @@
 	<algorithm>
 	<cstdlib>
 
+1715006426 source:c:\users\admin\onedrive\documents\game\cute cat\main.cpp
+	<iostream>
+	<cstdlib>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"graphics.h"
+	"defs.h"
+	"game.h"
+	<bits/stdc++.h>
+	<cstdlib>
+	<fstream>
+
+1714830487 c:\users\admin\onedrive\documents\game\cute cat\graphics.h
+	<cstdlib>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"defs.h"
+	<vector>
+	"game.h"
+
+1714974627 c:\users\admin\onedrive\documents\game\cute cat\defs.h
+
+1714989701 c:\users\admin\onedrive\documents\game\cute cat\game.h
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	"defs.h"
+	"graphics.h"
+	<bits/stdc++.h>
+	<algorithm>
+	<cstdlib>
+
