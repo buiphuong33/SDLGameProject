@@ -182,6 +182,7 @@ int main(int argc, char *argv[])
     Box box;
     SDL_Texture* mysteryBox = graphics.loadTexture1("img/mysteryBox.png");
     SDL_Texture* scarfTexture = graphics.loadTexture1("img/scarf.png");
+    SDL_Texture* scarfSticker = graphics.loadTexture1("img/scarfSticker.png");
     // khai bao mang song
     SDL_Texture* heart1 = graphics.loadTexture1("img/heart.png");
     SDL_Texture* heart2 = graphics.loadTexture1("img/heart.png");
@@ -219,8 +220,9 @@ int main(int argc, char *argv[])
     Uint32 levelUpInterval = 20000;
     Uint32 lastBoxAppear = 0;
     Uint32 boxAppearInterval = 20000;
+    Uint32 giftStartTime = 0;
     int gift = 3;
-
+    int countdown;
     while(!quit ) {
 
         while( SDL_PollEvent( &e ) != 0 ) {
@@ -231,20 +233,10 @@ int main(int argc, char *argv[])
                     if (currentState == SCREEN_1) {
                         currentState = SCREEN_2;
                         startTime = SDL_GetTicks();
-                    }
-                 }
-                 else if(x>=SETTING_X && x<=SETTING_X+SETTING_W && y>=SETTING_Y && y<=SETTING_Y+SETTING_H) {
-                    if(currentState == SCREEN_1) {
-                        currentState = SCREEN_4;
-                    }
-                 }
-                 else if(x>=REPLAY_X && x<=REPLAY_X+REPLAY_W && y>=REPLAY_Y && y<=REPLAY_Y+REPLAY_H) {
-                    if(currentState == SCREEN_3) {
-                       // hearts=3;
                         bush.bushCount=0;
                         rocket.rocketCount=0;
                         cat.posX = SCREEN_WIDTH-700;
-                        cat.posY = GROUND;
+                        cat.posY = GROUND-30;
                         coinCount=0;
                         for (int i=0; i<5; i++) {
                             coins[i].visible = true;
@@ -254,13 +246,25 @@ int main(int argc, char *argv[])
                         rocket.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
                         bom.posX = rand()% 500;
                         bom.posY = rand()%(SCREEN_HEIGHT) - SCREEN_HEIGHT;
-                        //startTime = currentTime;
+                        lastBoxAppear = 0;
+
+
                         ROCKET_SPEED = MIN_ROCKET_SPEED;
                         BOM_SPEED = MIN_BOM_SPEED;
                         BUSH_SPEED = MIN_BUSH_SPEED;
                         COIN_SPEED = MIN_COIN_SPEED;
                         LAYER4_SPEED = MIN_LAYER4_SPEED;
                         LAYER5_SPEED = MIN_LAYER5_SPEED;
+                    }
+                 }
+                 else if(x>=SETTING_X && x<=SETTING_X+SETTING_W && y>=SETTING_Y && y<=SETTING_Y+SETTING_H) {
+                    if(currentState == SCREEN_1) {
+                        currentState = SCREEN_4;
+                    }
+                 }
+                 else if(x>=REPLAY_X && x<=REPLAY_X+REPLAY_W && y>=REPLAY_Y && y<=REPLAY_Y+REPLAY_H) {
+                    if(currentState == SCREEN_3) {
+
                         currentState = SCREEN_1;
                     }
                  }
@@ -411,11 +415,11 @@ int main(int argc, char *argv[])
                 visibleCoins = 5;
             }
             bush.bushMove(BUSH_SPEED);
-            graphics.render_rect(bushTexture, bush.posX, bush.posY-15, 70, 70);
+            graphics.render_rect(bushTexture, bush.posX, bush.posY, 70, 70);
 
             if(bush.bushCount >= 5) {
                 rocket.rocketMove(ROCKET_SPEED);
-                graphics.render_rect(rocketTexture, rocket.posX, rocket.posY-70, 70, 50);
+                graphics.render_rect(rocketTexture, rocket.posX, rocket.posY, 70, 50);
             }
             if(rocket.rocketCount>=5) {
                 bom.enemyMove(BOM_SPEED);
@@ -427,15 +431,16 @@ int main(int argc, char *argv[])
                 if(box.posX + 50 <0  ) {
                     box.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
                     lastBoxAppear = deltaTime;
-                    cerr << "." << endl;
+
                 }
                 else if(SDL_HasIntersection(&r1, &r2)) {
+                    giftStartTime = deltaTime;
                     lastBoxAppear = deltaTime;
                     int xBox = box.posX;
                     int yBox = box.posY;
                     int k = rand();
                     gift = k%2;
-                    cerr << k << endl;
+                    //cerr << k << endl;
                     for (int i=0; i<=50; i+=10) {
                         if(gift==1) {
                             graphics.render_rect(bomTexture, xBox-30-i, yBox-150-i, 120+2*i, 100+2*i);
@@ -450,13 +455,28 @@ int main(int argc, char *argv[])
                     box.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
                 }
             }
-            if(gift!=0) {
+            if(gift==0) {
+                countdown = 11-(deltaTime - giftStartTime)/1000;
+                if(countdown >=0 ) {
+                    graphics.render_rect(scarfSticker, 20, 10, 50, 50);
+                    string countDownNumber = to_string(countdown);
+                    SDL_Surface* countDownSurface = graphics.createTextSurface(countDownNumber, font, color );
+                    SDL_Texture* countDownTexture = graphics.createText(countDownSurface);
+                    graphics.drawText(countDownTexture, 36, 10);
+                }
+                if(countdown<0) gift = 3;
+            }
+            if(gift == 1) {
+                graphics.play(GameOver);
+                currentState = SCREEN_3;
+                gift = 3;
+            }
+            if(gift==3) {
                 if(SDL_HasIntersection(&r1, &r3)|| SDL_HasIntersection(&r1, &r4)|| SDL_HasIntersection(&r1, &r5)) {
-                cerr << "collide" << endl;
                     currentState = SCREEN_3;
                     updateHighestCoins(coinCount);
                     graphics.play(GameOver);
-                    SDL_Delay(1000);
+                    SDL_Delay(2000);
                 }
             }
 

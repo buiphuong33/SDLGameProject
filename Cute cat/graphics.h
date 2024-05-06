@@ -210,7 +210,7 @@ struct Graphics {
     //ve nhan vat chinh
     void render( const Character& character) {
         const SDL_Rect* clip = character.getCurrentClip();
-        SDL_Rect renderQuad = {character.posX, character.posY-30, clip->w, clip->h};
+        SDL_Rect renderQuad = {character.posX, character.posY, clip->w, clip->h};
         SDL_RenderCopy(renderer, character.texture, clip, &renderQuad);
     }
 

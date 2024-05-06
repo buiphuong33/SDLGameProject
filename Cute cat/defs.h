@@ -6,9 +6,9 @@
 #define WINDOW_TITLE "Cute cat"
 
 #define GROUND 440
-#define MAX_HEIGHT 250
-#define JUMP_SPEED  12;
-#define FALL_SPEED  12;
+#define MAX_HEIGHT 220
+#define JUMP_SPEED  13;
+#define FALL_SPEED  13;
 
 #define JUMP 1
 #define FALL 2

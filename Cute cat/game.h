@@ -22,7 +22,9 @@ bool overlap(const SDL_Rect& r1, const SDL_Rect& r2) {
 bool vacham (SDL_Rect &r1, SDL_Rect &r2, int speed) {
     return (0 <= r2.x-(r1.x+r1.w) && r2.x-(r1.x+r1.w) <= speed && (r1.y+r1.h) >= r2.y) ;//|| (r1.x<=r2.x+r2.w && r1.y+r1.h>=r2.y && r2.x-(r1.x+r1.w)<=speed) ;
 }
-
+bool collision (const SDL_Rect &r1, const SDL_Rect &r2) {
+    return (r1.x+r1.w>=r2.x && r1.x+r1.w<=r2.w&&r1.y+r1.h>=r2.y);
+}
 void update(int &speed) {
     speed+=1;
 }
@@ -60,20 +62,18 @@ struct Character {
     const SDL_Rect* getCurrentClip() const {
         return &(clips[currentFrame]);
     }
-
-
     int posX = SCREEN_WIDTH-700;
-    int posY = GROUND;
+    int posY = GROUND-30;
     int status = 0;
     int step = INITIAL_STEP;
     bool onGround() {
-        return posY == GROUND;
+        return posY == GROUND-30;
     }
 
     void jumpUp() {
         if (status == JUMP && posY >= MAX_HEIGHT) posY+= -JUMP_SPEED;
         if (posY <= MAX_HEIGHT) status = FALL;
-        if (status == FALL && posY < GROUND) posY+=FALL_SPEED
+        if (status == FALL && posY < GROUND-30) posY+=FALL_SPEED
 
     }
     void moveLeft() {
@@ -97,7 +97,7 @@ struct Character {
 
 struct Rocket {
     int posX = rand() % (SCREEN_WIDTH) + 2*SCREEN_WIDTH;
-	int	posY = GROUND  ;
+	int	posY = GROUND-50  ;
 	int rocketCount = 0;
 	void rocketMove(const int &movespeed) {
 	    posX -= movespeed;
@@ -108,7 +108,7 @@ struct Rocket {
 	}
 
     SDL_Rect getRocketRect()  const{
-    return {posX, posY, 70, 70};
+    return {posX, posY, 70, 50};
     }
 
 };
@@ -175,7 +175,7 @@ struct Bullet {
 };
 struct Bush {
     int posX = rand() % (SCREEN_WIDTH) + 2*SCREEN_WIDTH;
-	int	posY = GROUND ;
+	int	posY = GROUND-15 ;
 	int bushCount = 0;
 	void bushMove(const int &movespeed) {
 	    posX -= movespeed;
@@ -186,7 +186,7 @@ struct Bush {
 	}
 
     SDL_Rect getBushRect()  const{
-    return {posX+5, posY+20, 10, 10};
+    return {posX+10, posY+10, 50, 50};
     }
 };
 struct Coin {
@@ -255,7 +255,7 @@ struct Coin {
 struct Box {
     bool active;
     int posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
-	int	posY = GROUND  ;
+	int	posY = GROUND -30 ;
 	void boxMove(const int &movespeed) {
 	    posX -= movespeed;
         if (posX + MAX_BOX_WIDTH < 0) {
