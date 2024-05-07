@@ -6,13 +6,18 @@
 #define WINDOW_TITLE "Cute cat"
 
 #define GROUND 440
-#define MAX_HEIGHT 220
-#define JUMP_SPEED  13;
-#define FALL_SPEED  13;
+#define MAX_HEIGHT 190
+#define JUMP_SPEED  12;
+#define FALL_SPEED  12;
 
-#define JUMP 1
-#define FALL 2
-#define RUN	0
+#define RUN	10
+#define JUMP 11
+#define FALL 12
+
+#define SCARF 0
+#define BOM 1
+#define MAGNETIC 2
+#define NONE 3
 
 #define ENEMY_POSITION_RANGE 0
 #define ENEMY_SPEED 9
@@ -35,6 +40,8 @@
 #define MIN_LAYER4_SPEED 8
 #define MIN_COIN_SPEED 8
 #define MIN_BOX_SPEED 8
+
+#define MAGNETIC_DISTANCE 300
 const int FLYING_FRAMES = 5;
 
 const int PLAY_X =380;

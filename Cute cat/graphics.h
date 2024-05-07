@@ -216,7 +216,7 @@ struct Graphics {
 
     void renderCoin(const Coin& coin) {
         const SDL_Rect* clip = coin.getCurrentClip();
-        SDL_Rect renderQuad = {coin.posX, coin.posY-80, clip->w, clip->h};
+        SDL_Rect renderQuad = {coin.posX, coin.posY, clip->w, clip->h};
         SDL_RenderCopy(renderer, coin.texture, clip, &renderQuad);
     }
 

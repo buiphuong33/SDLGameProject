@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
     r1Layer1.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer1;
-    r2Layer1.x = -(SCREEN_WIDTH-1);
+    r2Layer1.x = (SCREEN_WIDTH-1);
     r2Layer1.y = 0;
     r2Layer1.w = SCREEN_WIDTH;
     r2Layer1.h = SCREEN_HEIGHT;
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
     r1Layer2.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer2;
-    r2Layer2.x = -(SCREEN_WIDTH-1);
+    r2Layer2.x = (SCREEN_WIDTH-1);
     r2Layer2.y = 0;
     r2Layer2.w = SCREEN_WIDTH;
     r2Layer2.h = SCREEN_HEIGHT;
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
     r1Layer3.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer3;
-    r2Layer3.x = -(SCREEN_WIDTH-1);
+    r2Layer3.x = (SCREEN_WIDTH-1);
     r2Layer3.y = 0;
     r2Layer3.w = SCREEN_WIDTH;
     r2Layer3.h = SCREEN_HEIGHT;
@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
     r1Layer4.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer4;
-    r2Layer4.x = -(SCREEN_WIDTH-1);
+    r2Layer4.x = (SCREEN_WIDTH-1);
     r2Layer4.y = 0;
     r2Layer4.w = SCREEN_WIDTH;
     r2Layer4.h = SCREEN_HEIGHT;
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
     r1Layer5.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer5;
-    r2Layer5.x = -(SCREEN_WIDTH-LAYER5_SPEED);
+    r2Layer5.x = (SCREEN_WIDTH-LAYER5_SPEED);
     r2Layer5.y = 0;
     r2Layer5.w = SCREEN_WIDTH;
     r2Layer5.h = SCREEN_HEIGHT;
@@ -183,6 +183,8 @@ int main(int argc, char *argv[])
     SDL_Texture* mysteryBox = graphics.loadTexture1("img/mysteryBox.png");
     SDL_Texture* scarfTexture = graphics.loadTexture1("img/scarf.png");
     SDL_Texture* scarfSticker = graphics.loadTexture1("img/scarfSticker.png");
+    SDL_Texture* magneticTexture = graphics.loadTexture1("img/magnetic.png");
+    SDL_Texture* magneticSticker = graphics.loadTexture1("img/magneticSticker.png");
     // khai bao mang song
     SDL_Texture* heart1 = graphics.loadTexture1("img/heart.png");
     SDL_Texture* heart2 = graphics.loadTexture1("img/heart.png");
@@ -219,9 +221,9 @@ int main(int argc, char *argv[])
     Uint32 lastLevelUp = 0;
     Uint32 levelUpInterval = 20000;
     Uint32 lastBoxAppear = 0;
-    Uint32 boxAppearInterval = 20000;
+    Uint32 boxAppearInterval = 15000;
     Uint32 giftStartTime = 0;
-    int gift = 3;
+    int gift = NONE;
     int countdown;
     while(!quit ) {
 
@@ -247,7 +249,6 @@ int main(int argc, char *argv[])
                         bom.posX = rand()% 500;
                         bom.posY = rand()%(SCREEN_HEIGHT) - SCREEN_HEIGHT;
                         lastBoxAppear = 0;
-
 
                         ROCKET_SPEED = MIN_ROCKET_SPEED;
                         BOM_SPEED = MIN_BOM_SPEED;
@@ -397,8 +398,8 @@ int main(int argc, char *argv[])
                 SDL_Rect r2 = coins[i].getCoinRect();
                 if(coins[i].visible) {
                     graphics.renderCoin(coins[i]);
-                    if(overlap(r1, r2) || coins[i].posX<0) {
-                        if(overlap(r1, r2)) {
+                    if(overlap(r1, r2) || coins[i].posX<0 || (gift==MAGNETIC && InsideMagneticDistance(r1, r2))) {
+                        if(overlap(r1, r2) || (gift==MAGNETIC && InsideMagneticDistance(r1, r2)) ) {
                             if(!soundClick) graphics.play(Collect);
                             coinCount++;
                         }
@@ -407,7 +408,7 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            if(visibleCoins ==0) {
+            if(visibleCoins == 0) {
                 for (int i=0; i<5; i++) {
                     coins[i].visible = true;
                     coins[i].posX = coinPosX + 50*i;
@@ -417,7 +418,7 @@ int main(int argc, char *argv[])
             bush.bushMove(BUSH_SPEED);
             graphics.render_rect(bushTexture, bush.posX, bush.posY, 70, 70);
 
-            if(bush.bushCount >= 5) {
+            if(bush.bushCount >= 1) {
                 rocket.rocketMove(ROCKET_SPEED);
                 graphics.render_rect(rocketTexture, rocket.posX, rocket.posY, 70, 50);
             }
@@ -426,7 +427,7 @@ int main(int argc, char *argv[])
                 graphics.render_rect(bomTexture, bom.posX, bom.posY, 90, 70);
             }
             if(deltaTime - lastBoxAppear > boxAppearInterval) {
-                box.boxMove(8);
+                box.boxMove(LAYER5_SPEED);
                 graphics.render_rect(mysteryBox, box.posX, box.posY-100, 50, 50);
                 if(box.posX + 50 <0  ) {
                     box.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
@@ -438,15 +439,18 @@ int main(int argc, char *argv[])
                     lastBoxAppear = deltaTime;
                     int xBox = box.posX;
                     int yBox = box.posY;
-                    int k = rand();
-                    gift = k%2;
+                    gift = rand()%3;
                     //cerr << k << endl;
                     for (int i=0; i<=50; i+=10) {
-                        if(gift==1) {
+                        if(gift==BOM) {
                             graphics.render_rect(bomTexture, xBox-30-i, yBox-150-i, 120+2*i, 100+2*i);
                         }
-                        else if(gift==0) {
+                        else if(gift==SCARF) {
                             graphics.render_rect(scarfTexture, xBox-30-i, yBox-150-i, 120+2*i, 100+2*i);
+                        }
+                        else if(gift == MAGNETIC) {
+                            graphics.render_rect(magneticTexture, xBox-50-i, yBox-170-i, 120+2*i, 100+2*i);
+
                         }
                             SDL_Delay(50);
                             graphics.presentScene();
@@ -455,7 +459,7 @@ int main(int argc, char *argv[])
                     box.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
                 }
             }
-            if(gift==0) {
+            if(gift==SCARF) {
                 countdown = 11-(deltaTime - giftStartTime)/1000;
                 if(countdown >=0 ) {
                     graphics.render_rect(scarfSticker, 20, 10, 50, 50);
@@ -464,14 +468,25 @@ int main(int argc, char *argv[])
                     SDL_Texture* countDownTexture = graphics.createText(countDownSurface);
                     graphics.drawText(countDownTexture, 36, 10);
                 }
-                if(countdown<0) gift = 3;
+                if(countdown<0) gift = NONE;
             }
-            if(gift == 1) {
+            if(gift==MAGNETIC) {
+                countdown = 11-(deltaTime - giftStartTime)/1000;
+                if(countdown >=0 ) {
+                    graphics.render_rect(magneticSticker, 20, 10, 50, 50);
+                    string countDownNumber = to_string(countdown);
+                    SDL_Surface* countDownSurface = graphics.createTextSurface(countDownNumber, font, color );
+                    SDL_Texture* countDownTexture = graphics.createText(countDownSurface);
+                    graphics.drawText(countDownTexture, 36, 10);
+                }
+                if(countdown<0) gift = NONE;
+            }
+            if(gift == BOM) {
                 graphics.play(GameOver);
                 currentState = SCREEN_3;
-                gift = 3;
+                gift = NONE;
             }
-            if(gift==3) {
+            if(gift==NONE) {
                 if(SDL_HasIntersection(&r1, &r3)|| SDL_HasIntersection(&r1, &r4)|| SDL_HasIntersection(&r1, &r5)) {
                     currentState = SCREEN_3;
                     updateHighestCoins(coinCount);
@@ -479,7 +494,6 @@ int main(int argc, char *argv[])
                     SDL_Delay(2000);
                 }
             }
-
             graphics.render (cat);
             if(deltaTime - lastLevelUp >levelUpInterval) {
                 update(BUSH_SPEED);

@@ -29,7 +29,12 @@ void update(int &speed) {
     speed+=1;
 }
 
-
+bool InsideMagneticDistance(const SDL_Rect& r1, const SDL_Rect& r2) {
+    if(r2.x-r1.x<= MAGNETIC_DISTANCE) {
+        return true;
+    }
+    return false;
+}
 struct Character {
     SDL_Texture* texture;
     std::vector<SDL_Rect> clips;
@@ -50,7 +55,6 @@ struct Character {
     }
 
      void tick() {
-        //currentFrame = (currentFrame +1) % (clips.size());
         static int frameCount = 0;
         if (frameCount >= frameDelay) {
             currentFrame = (currentFrame + 1) % clips.size();
@@ -64,12 +68,11 @@ struct Character {
     }
     int posX = SCREEN_WIDTH-700;
     int posY = GROUND-30;
-    int status = 0;
+    int status = RUN;
     int step = INITIAL_STEP;
     bool onGround() {
         return posY == GROUND-30;
     }
-
     void jumpUp() {
         if (status == JUMP && posY >= MAX_HEIGHT) posY+= -JUMP_SPEED;
         if (posY <= MAX_HEIGHT) status = FALL;
@@ -94,10 +97,9 @@ struct Character {
     }
 };
 
-
 struct Rocket {
     int posX = rand() % (SCREEN_WIDTH) + 2*SCREEN_WIDTH;
-	int	posY = GROUND-50  ;
+	int	posY = GROUND-90  ;
 	int rocketCount = 0;
 	void rocketMove(const int &movespeed) {
 	    posX -= movespeed;
@@ -108,71 +110,12 @@ struct Rocket {
 	}
 
     SDL_Rect getRocketRect()  const{
-    return {posX, posY, 70, 50};
+    return {posX+10, posY+10, 50, 40};
     }
 
 };
 
 
-
-struct Enemy2 {
-    SDL_Texture* texture;
-    std::vector<SDL_Rect> clips;
-    int currentFrame = 0;
-    SDL_Rect clip;
-    void init(SDL_Texture* _texture, int frames, const int _clips [][4]) {
-        texture = _texture;
-
-
-        for (int i = 0; i < frames; i++) {
-            clip.x = _clips[i][0];
-            clip.y = _clips[i][1];
-            clip.w = _clips[i][2];
-            clip.h = _clips[i][3];
-            clips.push_back(clip);
-        }
-    }
-    void tick() {
-        currentFrame = (currentFrame +1) % clips.size();
-    }
-
-    const SDL_Rect* getCurrentClip() const {
-        return &(clips[currentFrame]);
-    }
-    int posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
-	int	posY = GROUND +10 ;
-
-	void enemyMove(const int &movespeed) {
-	    posX -= ( ENEMY_SPEED);
-        if (posX + MAX_ENEMY_WIDTH < 0) {
-		posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
-        }
-	}
-
-    SDL_Rect getEnemyRect()  const{
-    return {posX, posY, clip.w, clip.h};
-    }
-
-};
-
-
-struct Bullet {
-    int posX;
-    int posY;
-    void getPos(Enemy2 enemy) {
-        posX = rand() % enemy.posX ;
-        posY = GROUND -5;
-    }
-    void bulletMove(const int &bulletSpeed, Enemy2 enemy) {
-        if (enemy.posX <= SCREEN_WIDTH && enemy.posX >0) {
-            posX -=(bulletSpeed);
-            if (posX<0) {
-                posX =enemy.posX ;
-            }
-        }
-    }
-
-};
 struct Bush {
     int posX = rand() % (SCREEN_WIDTH) + 2*SCREEN_WIDTH;
 	int	posY = GROUND-15 ;
@@ -207,7 +150,6 @@ struct Coin {
         }
     }
     void tick() {
-        //currentFrame = (currentFrame +1) % (clips.size());
         static int frameCount = 0;
         if (frameCount >= frameDelay) {
             currentFrame = (currentFrame + 1) % clips.size();
@@ -221,7 +163,7 @@ struct Coin {
         return &(clips[currentFrame]);
     }
     int posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
-	int	posY = GROUND  ;
+	int	posY = GROUND -150 ;
 
 	void coinMove(const int &movespeed) {
 	    posX -= ( movespeed);
@@ -255,7 +197,7 @@ struct Coin {
 struct Box {
     bool active;
     int posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
-	int	posY = GROUND -30 ;
+	int	posY = GROUND -50 ;
 	void boxMove(const int &movespeed) {
 	    posX -= movespeed;
         if (posX + MAX_BOX_WIDTH < 0) {
