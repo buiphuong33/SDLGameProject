@@ -19,27 +19,18 @@ bool overlap(const SDL_Rect& r1, const SDL_Rect& r2) {
             inside(r1.x, r1.y+r1.h, r2) || inside(r1.x+r1.w, r1.y+r1.h, r2);
 }
 
-bool vacham (SDL_Rect &r1, SDL_Rect &r2, int speed) {
-    return (0 <= r2.x-(r1.x+r1.w) && r2.x-(r1.x+r1.w) <= speed && (r1.y+r1.h) >= r2.y) ;//|| (r1.x<=r2.x+r2.w && r1.y+r1.h>=r2.y && r2.x-(r1.x+r1.w)<=speed) ;
-}
-bool collision (const SDL_Rect &r1, const SDL_Rect &r2) {
-    return (r1.x+r1.w>=r2.x && r1.x+r1.w<=r2.w&&r1.y+r1.h>=r2.y);
-}
 void update(int &speed) {
     speed+=1;
 }
 
 bool InsideMagneticDistance(const SDL_Rect& r1, const SDL_Rect& r2) {
-    if(r2.x-r1.x<= MAGNETIC_DISTANCE) {
-        return true;
-    }
-    return false;
+    return (r2.x-r1.x<= MAGNETIC_DISTANCE);
 }
 struct Character {
     SDL_Texture* texture;
     std::vector<SDL_Rect> clips;
     int currentFrame = 0;
-    int frameDelay = 5;
+    int frameDelay = 3;
     SDL_Rect clip;
     void init(SDL_Texture* _texture, int frames, const int _clips [][4]) {
         texture = _texture;
@@ -64,19 +55,20 @@ struct Character {
         }
     }
     const SDL_Rect* getCurrentClip() const {
+        if(posY<GROUND-20) return &(clips[2]);
         return &(clips[currentFrame]);
     }
     int posX = SCREEN_WIDTH-700;
-    int posY = GROUND-30;
+    int posY = GROUND-20;
     int status = RUN;
     int step = INITIAL_STEP;
     bool onGround() {
-        return posY == GROUND-30;
+        return posY == GROUND-20;
     }
     void jumpUp() {
         if (status == JUMP && posY >= MAX_HEIGHT) posY+= -JUMP_SPEED;
         if (posY <= MAX_HEIGHT) status = FALL;
-        if (status == FALL && posY < GROUND-30) posY+=FALL_SPEED
+        if (status == FALL && posY < GROUND-20) posY+=FALL_SPEED
 
     }
     void moveLeft() {
@@ -178,14 +170,15 @@ struct Coin {
     }
 };
  struct Bom {
-    int posX = rand()% 500;
-	int	posY = rand()%(SCREEN_HEIGHT) - SCREEN_HEIGHT;
+    int posX = SCREEN_WIDTH;
+	int	posY = 0;
 
 	void enemyMove(const int &movespeed) {
 	    posY += movespeed;
+	    posX -= 6;
         if (posY > SCREEN_HEIGHT) {
-            posX = rand()%500;
-            posY = rand() % (SCREEN_HEIGHT) - SCREEN_HEIGHT;
+            posX = SCREEN_WIDTH;
+            posY = 0;
         }
 	}
 
@@ -210,4 +203,46 @@ struct Box {
     }
 };
 
+struct Bat {
+    SDL_Texture* texture;
+    std::vector<SDL_Rect> clips;
+    int currentFrame = 0;
+    int frameDelay = 5;
+    SDL_Rect clip;
+    void init(SDL_Texture* _texture, int frames, const int _clips [][4]) {
+        texture = _texture;
+        for (int i = 0; i < frames; i++) {
+            clip.x = _clips[i][0];
+            clip.y = _clips[i][1];
+            clip.w = _clips[i][2];
+            clip.h = _clips[i][3];
+            clips.push_back(clip);
+        }
+    }
+     void tick() {
+        static int frameCount = 0;
+        if (frameCount >= frameDelay) {
+            currentFrame = (currentFrame + 1) % clips.size();
+            frameCount = 0;
+        } else {
+            frameCount++;
+        }
+    }
+    const SDL_Rect* getCurrentClip() const {
+        return &(clips[currentFrame]);
+    }
+    int posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
+	int	posY = GROUND-90 ;
+	int batCount = 0;
+	void batMove(const int &movespeed) {
+	    posX -= movespeed;
+        if (posX + MAX_ENEMY_WIDTH < 0) {
+            posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
+            batCount++;
+        }
+	}
+    SDL_Rect getBatRect()  const{
+    return {posX+5, posY+5, clip.w-5, clip.h-5};
+    }
+};
 #endif // _GAME__H

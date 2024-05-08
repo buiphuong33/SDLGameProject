@@ -170,13 +170,16 @@ int main(int argc, char *argv[])
 
     // khai bao nhan vat chinh
     Character cat;
-    SDL_Texture* catTexture = graphics.loadTexture1(CAT_SPRITE_FILE);
-    cat.init(catTexture, CAT_FRAMES, CAT_CLIPS);
+    SDL_Texture* catTexture = graphics.loadTexture1(WHITE_CAT_FILE);
+    cat.init(catTexture, WHITE_CAT_FRAMES, WHITE_CAT_CLIPS);
+
     // khai bao chuong ngai vat
+    Bat bat;
+    SDL_Texture* batTexture = graphics.loadTexture1(BAT_FILE);
+    bat.init(batTexture, BAT_FRAMES, BAT_CLIPS);
+
     Bush bush;
-    SDL_Texture* bushTexture = graphics.loadTexture1("img/bush.png");
-    Rocket rocket;
-    SDL_Texture* rocketTexture = graphics.loadTexture1("img/rocket.png");
+    SDL_Texture* bushTexture = graphics.loadTexture1("img/mushroom.png");
     Bom bom;
     SDL_Texture* bomTexture = graphics.loadTexture1("img/bom.png");
     Box box;
@@ -185,10 +188,7 @@ int main(int argc, char *argv[])
     SDL_Texture* scarfSticker = graphics.loadTexture1("img/scarfSticker.png");
     SDL_Texture* magneticTexture = graphics.loadTexture1("img/magnetic.png");
     SDL_Texture* magneticSticker = graphics.loadTexture1("img/magneticSticker.png");
-    // khai bao mang song
-    SDL_Texture* heart1 = graphics.loadTexture1("img/heart.png");
-    SDL_Texture* heart2 = graphics.loadTexture1("img/heart.png");
-    SDL_Texture* heart3 = graphics.loadTexture1("img/heart.png");
+
     SDL_Texture* coinScore = graphics.loadTexture1("img/coinScore.png");
     //effect
     SDL_Texture *smokeTexture = graphics.loadTexture1("img/smoke.png");
@@ -236,24 +236,21 @@ int main(int argc, char *argv[])
                         currentState = SCREEN_2;
                         startTime = SDL_GetTicks();
                         bush.bushCount=0;
-                        rocket.rocketCount=0;
+                        bat.batCount = 0;
                         cat.posX = SCREEN_WIDTH-700;
-                        cat.posY = GROUND-30;
+                        cat.posY = GROUND-20;
                         coinCount=0;
                         for (int i=0; i<5; i++) {
                             coins[i].visible = true;
                             coins[i].posX = coinPosX + 50*i;
                         }
                         bush.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
-                        rocket.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
-                        bom.posX = rand()% 500;
-                        bom.posY = rand()%(SCREEN_HEIGHT) - SCREEN_HEIGHT;
+                        bat.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
+                        bom.posX = SCREEN_WIDTH;
+                        bom.posY = rand()% SCREEN_HEIGHT - SCREEN_HEIGHT;
                         lastBoxAppear = 0;
 
-                        ROCKET_SPEED = MIN_ROCKET_SPEED;
                         BOM_SPEED = MIN_BOM_SPEED;
-                        BUSH_SPEED = MIN_BUSH_SPEED;
-                        COIN_SPEED = MIN_COIN_SPEED;
                         LAYER4_SPEED = MIN_LAYER4_SPEED;
                         LAYER5_SPEED = MIN_LAYER5_SPEED;
                     }
@@ -389,12 +386,12 @@ int main(int argc, char *argv[])
             SDL_Rect r1 = cat.getCharacterRect();
             SDL_Rect r2 = box.getBoxRect();
             SDL_Rect r3 = bush.getBushRect();
-            SDL_Rect r4 = rocket.getRocketRect();
+            SDL_Rect r4 = bat.getBatRect();
             SDL_Rect r5 = bom.getBomRect();
 
             for (int i=0; i<5; i++) {
                 coins[i].tick();
-                coins[i].coinMove(COIN_SPEED);
+                coins[i].coinMove(LAYER5_SPEED);
                 SDL_Rect r2 = coins[i].getCoinRect();
                 if(coins[i].visible) {
                     graphics.renderCoin(coins[i]);
@@ -415,14 +412,16 @@ int main(int argc, char *argv[])
                 }
                 visibleCoins = 5;
             }
-            bush.bushMove(BUSH_SPEED);
+            bush.bushMove(LAYER5_SPEED);
             graphics.render_rect(bushTexture, bush.posX, bush.posY, 70, 70);
 
             if(bush.bushCount >= 1) {
-                rocket.rocketMove(ROCKET_SPEED);
-                graphics.render_rect(rocketTexture, rocket.posX, rocket.posY, 70, 50);
+                bat.batMove(LAYER5_SPEED);
+                bat.tick();
+                graphics.renderBat(bat);
+
             }
-            if(rocket.rocketCount>=5) {
+            if(bat.batCount>=5) {
                 bom.enemyMove(BOM_SPEED);
                 graphics.render_rect(bomTexture, bom.posX, bom.posY, 90, 70);
             }
@@ -496,9 +495,6 @@ int main(int argc, char *argv[])
             }
             graphics.render (cat);
             if(deltaTime - lastLevelUp >levelUpInterval) {
-                update(BUSH_SPEED);
-                update(ROCKET_SPEED);
-                update(COIN_SPEED);
                 update(LAYER5_SPEED);
                 update(LAYER4_SPEED);
                 cerr << ROCKET_SPEED << endl;
@@ -571,10 +567,20 @@ int main(int argc, char *argv[])
         SDL_DestroyTexture( layer4 );
         SDL_DestroyTexture( layer5 );
 
-        SDL_DestroyTexture(rocketTexture);
+        SDL_DestroyTexture(batTexture);
         SDL_DestroyTexture(catTexture);
         SDL_DestroyTexture(bushTexture);
+        SDL_DestroyTexture(bomTexture);
         SDL_DestroyTexture(CoinTexture);
+        SDL_DestroyTexture(playbutton);
+        SDL_DestroyTexture(settingButton);
+        SDL_DestroyTexture(replayButton);
+        SDL_DestroyTexture(exitButton);
+        SDL_DestroyTexture(settingBg);
+        SDL_DestroyTexture(intro);
+        SDL_DestroyTexture(gameover);
+        //SDL_DestroyTexture()
+
         TTF_CloseFont( font );
         Mix_FreeChunk(Jump);
         Mix_FreeChunk(Collect);

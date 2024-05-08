@@ -220,6 +220,11 @@ struct Graphics {
         SDL_RenderCopy(renderer, coin.texture, clip, &renderQuad);
     }
 
+    void renderBat(const Bat& bat) {
+        const SDL_Rect* clip = bat.getCurrentClip();
+        SDL_Rect renderQuad = {bat.posX, bat.posY, clip->w, clip->h};
+        SDL_RenderCopy(renderer, bat.texture, clip, &renderQuad);
+    }
 
     void waitUntilKeyPressed()
     {

@@ -6,7 +6,7 @@
 #define WINDOW_TITLE "Cute cat"
 
 #define GROUND 440
-#define MAX_HEIGHT 190
+#define MAX_HEIGHT 180
 #define JUMP_SPEED  12;
 #define FALL_SPEED  12;
 
@@ -35,13 +35,13 @@
 
 #define MIN_ROCKET_SPEED 12
 #define MIN_BUSH_SPEED 9
-#define MIN_BOM_SPEED 8
+#define MIN_BOM_SPEED 4
 #define MIN_LAYER5_SPEED 8
 #define MIN_LAYER4_SPEED 8
 #define MIN_COIN_SPEED 8
 #define MIN_BOX_SPEED 8
 
-#define MAGNETIC_DISTANCE 300
+#define MAGNETIC_DISTANCE 500
 const int FLYING_FRAMES = 5;
 
 const int PLAY_X =380;
@@ -86,46 +86,6 @@ const char* LAYER3 = "img/layer3.bmp";
 const char* LAYER4 = "img/layer4.bmp";
 const char* LAYER5 = "img/layer5.bmp";
 
-const char* CAT_SPRITE_FILE ="img/helloKitty.png";
-const int CAT_CLIPS[][4] = {
-    {0,0, 70, 80},
-    {70, 0, 70, 80},
-    {70*2, 0, 70, 80}
-};
-const int CAT_FRAMES = sizeof(CAT_CLIPS)/sizeof(int)/4;
-/*const char* CAT_SPRITE_FILE = "img/mycat.png";
-const int CAT_CLIPS[][4] = {
-    {  0, 7, 70, 53},
-    { 74, 7, 70, 53},
-    {74*2, 7, 70, 53},
-    { 74*3, 7, 70, 53},
-    { 74*4, 7, 70, 53},
-    { 74*5, 7, 70, 53}};
-const int CAT_FRAMES = sizeof(CAT_CLIPS)/sizeof(int)/6;*/
-
-const int GREYCAT_CLIPS[][4] = {
-    {  2, 12, 67, 53},
-    { 76,12, 67, 53},
-    { 150, 12, 67, 53},
-    { 224, 12, 67, 53},
-    { 298, 12, 67, 53}};
-const int GREYCAT_FRAMES = sizeof(GREYCAT_CLIPS)/sizeof(int)/5;
-
-const char* FIRE_SPRITE_FILE = "img/fire.png";
-const int FIRE_CLIPS[][4] = {
-    {0, 76, 68, 118},
-    {70, 52, 68, 118},
-    {140, 13, 68, 118},
-    {210, 2, 68, 118}};
-const int FIRE_FRAMES = sizeof(FIRE_CLIPS)/sizeof(int)/4;
-
-const char* CAT_INTRO = "img/cat_intro.png";
-const int CAT_INTRO_CLIPS[][4] = {
-    {  0, 0, 217, 200},
-    { 217, 0, 217, 200}};
-
-const int CAT_INTRO_FRAMES = sizeof(CAT_CLIPS)/sizeof(int)/2;
-
 const char* COIN_SPRITE_FILE = "img/coinSprite.png";
 const int COIN_CLIPS[][4] = {
     {0, 0, 49, 49},
@@ -135,5 +95,23 @@ const int COIN_CLIPS[][4] = {
     {49*4, 0, 49, 49},
     {49*5, 0, 49, 49}};
 const int COIN_FRAMES = sizeof(COIN_CLIPS)/sizeof(int)/6;
+
+const char* WHITE_CAT_FILE = "img/whiteCat.png";
+const int WHITE_CAT_CLIPS[][4] = {
+    {304, 13, 84, 67},
+    {202, 5, 85, 68},
+    {101, 0, 84, 67},
+    {0, 8, 83, 72}};
+const int WHITE_CAT_FRAMES = sizeof(WHITE_CAT_CLIPS)/sizeof(int)/4;
+
+const char* BAT_FILE = "img/batSprite.png";
+const int BAT_CLIPS[][4] = {
+    {7, 0, 62, 37},
+    {75, 0, 52, 39},
+    {138, 0, 57, 50},
+    {208, 10, 42, 40},
+    {269, 8, 55, 38},
+    {333, 6, 60, 30}};
+const int BAT_FRAMES = sizeof(BAT_CLIPS)/sizeof(int)/6;
 
 #endif
