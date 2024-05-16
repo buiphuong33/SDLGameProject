@@ -225,11 +225,6 @@ struct Graphics {
         SDL_RenderCopy(renderer, bat.texture, clip, &renderQuad);
     }
 
-    void renderSmoke(const Smoke& smoke, const Character& character) {
-        const SDL_Rect* clip = smoke.getCurrentClip();
-        SDL_Rect renderQuad = {character.posX, character.posY-50, clip->w, clip->h};
-        SDL_RenderCopy(renderer, smoke.texture, clip, &renderQuad);
-    }
     void waitUntilKeyPressed()
     {
         SDL_Event e;

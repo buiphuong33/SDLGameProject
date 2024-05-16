@@ -19,32 +19,17 @@
 #define MAGNETIC 2
 #define NONE 3
 
-#define ENEMY_POSITION_RANGE 0
-#define ENEMY_SPEED 9
 #define MAX_ENEMY_WIDTH 100
-
-#define BULLET_SPEED 15
-
-//#define BUSH_SPEED 9
-
 #define INITIAL_STEP 6
 
-//#define COIN_SPEED 8
 #define MAX_BOX_WIDTH 100
 #define MAX_COIN_WIDTH 100
-
-#define MIN_ROCKET_SPEED 12
-#define MIN_BUSH_SPEED 9
-#define MIN_BOM_SPEED 4
+#define COIN_GAP 50
+#define HEART_GAP 50
 #define MIN_LAYER5_SPEED 8
 #define MIN_LAYER4_SPEED 8
-#define MIN_COIN_SPEED 8
-#define MIN_BOX_SPEED 8
 
 #define MAGNETIC_DISTANCE 500
-
-
-const int FLYING_FRAMES = 5;
 
 const int PLAY_X =380;
 const int PLAY_Y =340;
@@ -81,7 +66,6 @@ const int BACK_Y = 364;
 const int BACK_W = 150;
 const int BACK_H = 68;
 
-const int COIN_GAP = 50;
 const char* LAYER1 = "img/layer1.bmp";
 const char* LAYER2 = "img/layer2.bmp";
 const char* LAYER3 = "img/layer3.bmp";
@@ -116,12 +100,4 @@ const int BAT_CLIPS[][4] = {
     {333, 6, 60, 30}};
 const int BAT_FRAMES = sizeof(BAT_CLIPS)/sizeof(int)/6;
 
-const char* SMOKE_FILE = "img/smokeAnimation.png";
-const int SMOKE_CLIPS[][4] = {
-    {0, 0, 56, 177},
-    {56, 0, 100, 177},
-    {156, 0, 130, 177},
-    {286, 0, 190, 177},
-    {476, 0, 200, 177}};
-const int SMOKE_FRAMES = sizeof(SMOKE_CLIPS)/sizeof(int)/5;
 #endif
