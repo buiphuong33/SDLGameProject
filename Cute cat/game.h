@@ -30,7 +30,7 @@ struct Character {
     SDL_Texture* texture;
     std::vector<SDL_Rect> clips;
     int currentFrame = 0;
-    int frameDelay = 3;
+    int frameDelay = 4;
     SDL_Rect clip;
     void init(SDL_Texture* _texture, int frames, const int _clips [][4]) {
         texture = _texture;
@@ -55,20 +55,20 @@ struct Character {
         }
     }
     const SDL_Rect* getCurrentClip() const {
-        if(posY<GROUND-20) return &(clips[2]);
+        if(posY<GROUND-15) return &(clips[2]);
         return &(clips[currentFrame]);
     }
     int posX = SCREEN_WIDTH-700;
-    int posY = GROUND-20;
+    int posY = GROUND-15;
     int status = RUN;
     int step = INITIAL_STEP;
     bool onGround() {
-        return posY == GROUND-20;
+        return posY == GROUND-15;
     }
     void jumpUp() {
         if (status == JUMP && posY >= MAX_HEIGHT) posY+= -JUMP_SPEED;
         if (posY <= MAX_HEIGHT) status = FALL;
-        if (status == FALL && posY < GROUND-20) posY+=FALL_SPEED
+        if (status == FALL && posY < GROUND-15) posY+=FALL_SPEED
 
     }
     void moveLeft() {
@@ -83,9 +83,13 @@ struct Character {
     bool outsideTheRight() {
         return posX > SCREEN_WIDTH-75;
     }
-
+    void reset() {
+        posX = SCREEN_WIDTH-700;
+        posY = GROUND-15;
+        status = RUN;
+    }
     SDL_Rect getCharacterRect() const  {
-    return {posX, posY, clip.w, clip.h};
+    return {posX-5, posY+5, clip.w-5, clip.h-5};
     }
 };
 
@@ -109,8 +113,8 @@ struct Rocket {
 
 
 struct Bush {
-    int posX = rand() % (SCREEN_WIDTH) + 2*SCREEN_WIDTH;
-	int	posY = GROUND-15 ;
+    int posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
+	int	posY = GROUND+5;
 	int bushCount = 0;
 	void bushMove(const int &movespeed) {
 	    posX -= movespeed;
@@ -121,7 +125,7 @@ struct Bush {
 	}
 
     SDL_Rect getBushRect()  const{
-    return {posX+10, posY+10, 50, 50};
+    return {posX+5, posY+5, 45, 45};
     }
 };
 struct Coin {
@@ -163,27 +167,24 @@ struct Coin {
 		posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
         }
 	}
-
-
     SDL_Rect getCoinRect()  const{
     return {posX, posY, clip.w, clip.h};
     }
 };
  struct Bom {
-    int posX = SCREEN_WIDTH;
-	int	posY = 0;
-
+    int posX = SCREEN_WIDTH+ rand()%200;
+	int	posY = -200;
 	void enemyMove(const int &movespeed) {
-	    posY += movespeed;
-	    posX -= 6;
+	    posY += 3;
+	    posX -= 3;
         if (posY > SCREEN_HEIGHT) {
             posX = SCREEN_WIDTH;
-            posY = 0;
+            posY = -200;
         }
 	}
 
     SDL_Rect getBomRect()  const{
-    return {posX, posY, 90, 70};
+    return {posX+10, posY+10, 50-10, 50-10};
     }
 
  };
@@ -197,7 +198,10 @@ struct Box {
             posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
         }
 	}
-
+    void reset() {
+        posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
+		posY = GROUND -50;
+    }
     SDL_Rect getBoxRect()  const{
     return {posX, posY-100, 50, 50};
     }
@@ -232,7 +236,7 @@ struct Bat {
         return &(clips[currentFrame]);
     }
     int posX = rand() % (SCREEN_WIDTH) + SCREEN_WIDTH;
-	int	posY = GROUND-90 ;
+	int	posY = GROUND-80 ;
 	int batCount = 0;
 	void batMove(const int &movespeed) {
 	    posX -= movespeed;
@@ -243,6 +247,61 @@ struct Bat {
 	}
     SDL_Rect getBatRect()  const{
     return {posX+5, posY+5, clip.w-5, clip.h-5};
+    }
+};
+struct Smoke {
+    SDL_Texture* texture;
+    std::vector<SDL_Rect> clips;
+    int currentFrame = 0;
+    int frameDelay = 4;
+    SDL_Rect clip;
+    void init(SDL_Texture* _texture, int frames, const int _clips [][4]) {
+        texture = _texture;
+        for (int i = 0; i < frames; i++) {
+            clip.x = _clips[i][0];
+            clip.y = _clips[i][1];
+            clip.w = _clips[i][2];
+            clip.h = _clips[i][3];
+            clips.push_back(clip);
+        }
+    }
+     void tick() {
+        static int frameCount = 0;
+        if (frameCount >= frameDelay) {
+            currentFrame = (currentFrame + 1) % clips.size();
+            frameCount = 0;
+        } else {
+            frameCount++;
+        }
+    }
+    const SDL_Rect* getCurrentClip() const {
+        return &(clips[currentFrame]);
+    }
+    bool done() {
+        if(currentFrame==3) {
+            currentFrame=0;
+            return true;
+        }
+        return false;
+    }
+};
+struct rainDrop {
+    int posX = SCREEN_WIDTH+ rand()%200;
+	int	posY = -200;
+	void Move(const int &movespeed) {
+	    posY += 3;
+	    posX -= 3;
+        if (posY > SCREEN_HEIGHT) {
+            posX = SCREEN_WIDTH;
+            posY = -200;
+        }
+	}
+	void reset() {
+        posX = SCREEN_WIDTH+ rand()%200;
+        posY = -200;
+	}
+    SDL_Rect getRainDropRect()  const{
+    return {posX, posY, 20, 30};
     }
 };
 #endif // _GAME__H

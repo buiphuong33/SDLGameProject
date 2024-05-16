@@ -6,7 +6,7 @@
 #define WINDOW_TITLE "Cute cat"
 
 #define GROUND 440
-#define MAX_HEIGHT 180
+#define MAX_HEIGHT 190
 #define JUMP_SPEED  12;
 #define FALL_SPEED  12;
 
@@ -15,7 +15,7 @@
 #define FALL 12
 
 #define SCARF 0
-#define BOM 1
+#define DOUBLE_COIN 1
 #define MAGNETIC 2
 #define NONE 3
 
@@ -42,6 +42,8 @@
 #define MIN_BOX_SPEED 8
 
 #define MAGNETIC_DISTANCE 500
+
+
 const int FLYING_FRAMES = 5;
 
 const int PLAY_X =380;
@@ -114,4 +116,12 @@ const int BAT_CLIPS[][4] = {
     {333, 6, 60, 30}};
 const int BAT_FRAMES = sizeof(BAT_CLIPS)/sizeof(int)/6;
 
+const char* SMOKE_FILE = "img/smokeAnimation.png";
+const int SMOKE_CLIPS[][4] = {
+    {0, 0, 56, 177},
+    {56, 0, 100, 177},
+    {156, 0, 130, 177},
+    {286, 0, 190, 177},
+    {476, 0, 200, 177}};
+const int SMOKE_FRAMES = sizeof(SMOKE_CLIPS)/sizeof(int)/5;
 #endif

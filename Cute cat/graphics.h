@@ -206,8 +206,7 @@ struct Graphics {
        SDL_Texture* ground1 = SDL_CreateTextureFromSurface(renderer, ground_surface);
        return ground1;
    }
-
-    //ve nhan vat chinh
+    //render main character
     void render( const Character& character) {
         const SDL_Rect* clip = character.getCurrentClip();
         SDL_Rect renderQuad = {character.posX, character.posY, clip->w, clip->h};
@@ -226,6 +225,11 @@ struct Graphics {
         SDL_RenderCopy(renderer, bat.texture, clip, &renderQuad);
     }
 
+    void renderSmoke(const Smoke& smoke, const Character& character) {
+        const SDL_Rect* clip = smoke.getCurrentClip();
+        SDL_Rect renderQuad = {character.posX, character.posY-50, clip->w, clip->h};
+        SDL_RenderCopy(renderer, smoke.texture, clip, &renderQuad);
+    }
     void waitUntilKeyPressed()
     {
         SDL_Event e;
@@ -236,7 +240,7 @@ struct Graphics {
             SDL_Delay(100);
         }
     }
-    //ham de ve nut play
+    //render buttons
     void render_rect(SDL_Texture* texture, int x, int y, int w, int h) {
         SDL_Rect rect;
         rect.x = x;
