@@ -10,14 +10,9 @@
 #include <cstdlib>
 using namespace std;
 
-bool inside(int x, int y, SDL_Rect r) {
-    return x > r.x && x < r.x+r.w && y > r.y && y < r.y+r.h;
-}
-
 void update(int &speed) {
     speed+=1;
 }
-
 bool InsideMagneticDistance(const SDL_Rect& r1, const SDL_Rect& r2) {
     return (r2.x-r1.x<= MAGNETIC_DISTANCE);
 }
@@ -37,8 +32,7 @@ struct Character {
             clips.push_back(clip);
         }
     }
-
-     void tick() {
+    void tick() {
         static int frameCount = 0;
         if (frameCount >= frameDelay) {
             currentFrame = (currentFrame + 1) % clips.size();
@@ -62,7 +56,6 @@ struct Character {
         if (status == JUMP && posY >= MAX_HEIGHT) posY+= -JUMP_SPEED;
         if (posY <= MAX_HEIGHT) status = FALL;
         if (status == FALL && posY < GROUND-15) posY+=FALL_SPEED
-
     }
     void moveLeft() {
         posX -=step;
@@ -82,7 +75,7 @@ struct Character {
         status = RUN;
     }
     SDL_Rect getCharacterRect() const  {
-        return {posX-5, posY+5, clip.w-5, clip.h-5};
+        return {posX+5, posY+5, clip.w-10, clip.h-10};
     }
 };
 
@@ -237,19 +230,19 @@ struct Bat {
 };
 
 struct rainDrop {
-    int posX = (SCREEN_WIDTH/2)+ (rand()% SCREEN_WIDTH/2);
-	int	posY = 0;
+    int posX = (SCREEN_WIDTH)+ (rand()% SCREEN_WIDTH/2);
+	int	posY = rand()%SCREEN_HEIGHT-SCREEN_HEIGHT;
 	void Move(const int &movespeed) {
-	    posY += 3;
-	    posX -= 4;
+	    posY += movespeed;
+	    posX -= movespeed;
         if (posY > SCREEN_HEIGHT) {
-            posX = (SCREEN_WIDTH/2)+ (rand()% SCREEN_WIDTH/2);
-            posY = 0;
+            posX = (SCREEN_WIDTH)+ (rand()% SCREEN_WIDTH/2);
+            posY = rand()%SCREEN_HEIGHT-SCREEN_HEIGHT;
         }
 	}
 	void reset() {
-        posX = (SCREEN_WIDTH/2)+ (rand()% SCREEN_WIDTH/2);
-        posY = 0;
+        posX = (SCREEN_WIDTH)+ (rand()% SCREEN_WIDTH/2);
+        posY = rand()%SCREEN_HEIGHT-SCREEN_HEIGHT;
 	}
     SDL_Rect getRainDropRect()  const{
         return {posX, posY, 20, 30};

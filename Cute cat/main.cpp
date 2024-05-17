@@ -34,10 +34,10 @@ void readHighestCoins () {
 }
 
 enum ScreenState {
-    SCREEN_1, // intro game
-    SCREEN_2, // man hinh chinh choi game
-    SCREEN_3, // game over
-    SCREEN_4, // dieu chinh am thanh
+    SCREEN_1, // intro bakground
+    SCREEN_2, // main background
+    SCREEN_3, // game over background
+    SCREEN_4, // music setting background
 };
 
 int main(int argc, char *argv[])
@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
     int coinCount = 0;
     int LAYER5_SPEED = MIN_LAYER5_SPEED;
     int LAYER4_SPEED = MIN_LAYER4_SPEED;
+    int RAIN_SPEED = 3;
 
     Graphics graphics;
     graphics.init();
@@ -157,7 +158,7 @@ int main(int argc, char *argv[])
     r1Layer5.h = SCREEN_HEIGHT;
 
     SDL_Rect r2Layer5;
-    r2Layer5.x = (SCREEN_WIDTH-LAYER5_SPEED);
+    r2Layer5.x = (SCREEN_WIDTH-1);
     r2Layer5.y = 0;
     r2Layer5.w = SCREEN_WIDTH;
     r2Layer5.h = SCREEN_HEIGHT;
@@ -177,6 +178,7 @@ int main(int argc, char *argv[])
 
     rainDrop raindrop;
     SDL_Texture* rainDropTexture = graphics.loadTexture1("img/rainDrop.png");
+    rainDrop raindrop2;
     Box box;
     SDL_Texture* mysteryBox = graphics.loadTexture1("img/mysteryBox.png");
 
@@ -184,7 +186,7 @@ int main(int argc, char *argv[])
     SDL_Texture* scarfSticker = graphics.loadTexture1("img/scarfSticker.png");
     SDL_Texture* magneticTexture = graphics.loadTexture1("img/magnetic.png");
     SDL_Texture* magneticSticker = graphics.loadTexture1("img/magneticSticker.png");
-    SDL_Texture* doubleCoinTexture = graphics.loadTexture1("img/doubleCoin2.png");
+    SDL_Texture* doubleCoinTexture = graphics.loadTexture1("img/doubleCoin.png");
     SDL_Texture* doubleCoinSticker = graphics.loadTexture1("img/doubleCoinSticker.png");
 
     SDL_Texture* coinScore = graphics.loadTexture1("img/coinScore.png");
@@ -221,7 +223,6 @@ int main(int argc, char *argv[])
     int countdown;
     bool quit = false;
     SDL_Event e;
-    //int d=1;
     int x;
     int y;
     while(!quit ) {
@@ -239,12 +240,13 @@ int main(int argc, char *argv[])
                         bat.reset();
                         cat.reset();
                         raindrop.reset();
+                        raindrop2.reset();
                         box.reset();
                         coinCount=0;
                         visibleCoins = 5;
                         for (int i=0; i<5; i++) {
                             coins[i].visible = true;
-                            coins[i].posX = coinPosX + 50*i;
+                            coins[i].posX = coinPosX + COIN_GAP*i;
                         }
                         lastBoxAppear = 0;
                         LAYER4_SPEED = MIN_LAYER4_SPEED;
@@ -340,8 +342,8 @@ int main(int argc, char *argv[])
             if(r1Layer4.x <-(SCREEN_WIDTH)) r1Layer4.x = (SCREEN_WIDTH-LAYER4_SPEED);
             if(r2Layer4.x <-(SCREEN_WIDTH)) r2Layer4.x = (SCREEN_WIDTH-LAYER4_SPEED);
 
-            if(r1Layer5.x <-(SCREEN_WIDTH-LAYER5_SPEED)) r1Layer5.x = (SCREEN_WIDTH-LAYER5_SPEED-10);
-            if(r2Layer5.x <-(SCREEN_WIDTH-LAYER5_SPEED)) r2Layer5.x = (SCREEN_WIDTH-LAYER5_SPEED-10);
+            if(r1Layer5.x <-(SCREEN_WIDTH-LAYER5_SPEED)) r1Layer5.x = (SCREEN_WIDTH-LAYER5_SPEED);
+            if(r2Layer5.x <-(SCREEN_WIDTH-LAYER5_SPEED)) r2Layer5.x = (SCREEN_WIDTH-LAYER5_SPEED);
 
             graphics.cop(layer1, &r1Layer1);
             graphics.cop(layer1, &r2Layer1);
@@ -385,6 +387,7 @@ int main(int argc, char *argv[])
             SDL_Rect bush_rect = bush.getBushRect();
             SDL_Rect bat_rect = bat.getBatRect();
             SDL_Rect rain_rect = raindrop.getRainDropRect();
+            SDL_Rect rain2_rect = raindrop2.getRainDropRect();
             SDL_Rect box_rect = box.getBoxRect();
             SDL_Rect bush2_rect = bush2.getBushRect();
             if(deltaTime-lastCoinAppear>=coinAppearInterval) {
@@ -425,14 +428,18 @@ int main(int argc, char *argv[])
             bush2.bushMove(LAYER5_SPEED);
             graphics.render_rect(bushTexture, bush.posX, bush.posY, 50, 50);
             graphics.render_rect(bushTexture, bush2.posX, bush2.posY, 50, 50);
-            if(bush.bushCount >= 1) {
+            if(deltaTime>=10000) {
                 bat.batMove(LAYER5_SPEED);
                 bat.tick();
                 graphics.renderBat(bat);
             }
-            if(bat.batCount>= 1) {
-                raindrop.Move(8);
+            if(deltaTime>=10000) {
+                raindrop.Move(RAIN_SPEED);
                 graphics.render_rect(rainDropTexture, raindrop.posX, raindrop.posY, 20, 30);
+            }
+            if(deltaTime>=20000) {
+                raindrop2.Move(RAIN_SPEED);
+                graphics.render_rect(rainDropTexture, raindrop2.posX, raindrop2.posY, 20, 30);
             }
             cat.tick();
             graphics.render (cat);
@@ -465,7 +472,7 @@ int main(int argc, char *argv[])
                         graphics.presentScene();
                     }
                     SDL_Delay(1000);
-                    box.posX = rand()% SCREEN_WIDTH + SCREEN_WIDTH;
+                    box.reset();
                 }
             }
             if(gift==SCARF) {
@@ -518,8 +525,9 @@ int main(int argc, char *argv[])
                     updateHighestCoins(coinCount);
                     currentState = SCREEN_3;
                 }
-                if(SDL_HasIntersection(&cat_rect, &rain_rect)) {
-                    raindrop.reset();
+                if(SDL_HasIntersection(&cat_rect, &rain_rect) || SDL_HasIntersection(&cat_rect, &rain2_rect)) {
+                    if(SDL_HasIntersection(&cat_rect, &rain_rect)) raindrop.reset();
+                    else if (SDL_HasIntersection(&cat_rect, &rain2_rect)) raindrop2.reset();
                     hearts--;
                     graphics.play(Collide);
                 }
